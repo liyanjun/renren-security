@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>充值</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="statics/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="statics/css/mobile.css">
+</head>
+<body>
+<div id="game-form">
+    <form method="post" action="front/submit" >
+        <div class="charge-name">
+            <input type="text" name="name" readonly="readonly" v-model="name">
+            <div class="input-items">
+                <div class="input-item">
+                    <span>账户名称</span>
+                    <input type="text" name="account" v-form-ctrl required placeholder="请输入游戏账号">
+                </div>
+                <div class="input-item" v-for="property in properties">
+                    <span>{{property.label}}</span>
+                    <input type="text" :name="property.name" v-form-ctrl required :placeholder="property.placeholder">
+                </div>
+            </div>
+        </div>
+        <div class="charge-wraper">
+
+            <div class="charge-head">
+                <span>公告</span>
+                <span class="charge-ad">{{advert}}</span>
+            </div>
+            <ul class="charge-items clearfix">
+                <li class="charge-item selected" v-if="index == 0" @click="selectItem(price)" v-for="(price,index) in prices" :id="price.id">
+                    <h1>{{price.price}}元</h1>
+                    <h2>{{price.virtualExchange}}</h2>
+                </li>
+                <li class="charge-item" v-if="index != 0" @click="selectItem(price)" v-for="(price,index) in prices" :id="price.id">
+                    <h1>{{price.price}}元</h1>
+                    <h2>{{price.virtualExchange}}</h2>
+                </li>
+                <li class="more" @click="loadMorePrice">
+                    <h3>更多</h3>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="counter-wraper">
+            <span>数量</span>
+            <div class="counter ">
+                <em class="minus" @click="sub">-</em>
+                <input name="gamePriceNumber" type="text" :value="count" class="count"/>
+                <em class="plus" @click="add">+</em>
+            </div>
+        </div>
+        <div style="height: 1.5rem"></div>
+        <input type="text" name="gamePriceId" v-model="gamePriceId" style="display: none"/>
+        <input type="submit" class="btn" value="立即充值">
+    </form>
+</div>
+</body>
+<script src="statics/libs/jquery.min.js"></script>
+<script src="statics/libs/vue.min.js"></script>
+<!--<script src="js/design.js" type="text/javascript"></script>-->
+<script src="statics/form.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //宽度为750px设计稿
+        var W = $(window).width();
+
+        var fontSize = W / 7.5;
+        if (fontSize > 100) {
+            fontSize = 100;
+        }
+        $("html").css("font-size", fontSize + 'px');
+
+    });
+
+</script>
+</html>
+
+
+
+

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.GamePayImgDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.GamePayImgEntity" id="gamePayImgMap">
+        <result property="id" column="id"/>
+        <result property="url" column="url"/>
+        <result property="matchPrice" column="match_price"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDel" column="is_del"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.GamePayImgEntity">
+		select * from game_pay_img where id = #{value}
+	</select>
+
+	<select id="queryByMatchPrice" resultType="io.renren.entity.GamePayImgEntity">
+		select * from game_pay_img where (match_price = #{totalAmount} or match_price = -1) and type = #{type} order by match_price desc
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.GamePayImgEntity">
+		select * from game_pay_img
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from game_pay_img 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.GamePayImgEntity">
+		insert into game_pay_img
+		(
+			`id`, 
+			`url`, 
+			`match_price`,
+			`type`,
+			`creator_id`,
+			`create_time`, 
+			`update_id`, 
+			`update_time`, 
+			`is_del`
+		)
+		values
+		(
+			#{id}, 
+			#{url}, 
+			#{matchPrice},
+			#{type},
+			#{creatorId}, 
+			#{createTime}, 
+			#{updateId}, 
+			#{updateTime}, 
+			#{isDel}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.GamePayImgEntity">
+		update game_pay_img 
+		<set>
+			<if test="url != null">`url` = #{url}, </if>
+			<if test="matchPrice != null">`match_price` = #{matchPrice}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="creatorId != null">`creator_id` = #{creatorId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateId != null">`update_id` = #{updateId}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="isDel != null">`is_del` = #{isDel}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from game_pay_img where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from game_pay_img where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

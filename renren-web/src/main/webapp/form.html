@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>游戏充值</title>
+
+    <!-- Bootstrap -->
+    <link href="statics/css/bootstrap.qianpen.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="statics/css/style.css">
+    <!--<link rel="stylesheet" href="statics/css/base.css">
+    <link rel="stylesheet" href="statics/css/help.css">-->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <![endif]-->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+</head>
+<body>
+<div id="game-form">
+    <div class="back-fff">
+        <div class="clearfix padding-bottom-20 padding-20">
+            <div class="col-xs-4"></div>
+            <div class="col-xs-4 text-center">游戏充值</div>
+        </div>
+    </div>
+    <div class="padding-l-r-20 margin-top-20 font18">{{advert}}</div>
+    <form class="password-form password-form-20" method="post" action="front/submit">
+        <div class="position border-bottom-f5">
+            <div class="password-txt">游戏名称</div>
+            <input type="text" name="name" class="form-control" v-model="name">
+        </div>
+        <div class="position border-bottom-f5">
+            <div class="password-txt">账号</div>
+            <input type="text" name="account" class="form-control" placeholder="请输入游戏账号">
+        </div>
+        <div class="position border-bottom-f5" v-for="property in properties">
+            <div class="password-txt">{{property.label}}</div>
+            <input type="text" :name="property.name" class="form-control" :placeholder="property.placeholder">
+        </div>
+        <div class="margin-top-20">
+            <div class="clearfix">
+                <div class="col-xs-3 padding-left-0 padding-right-10" v-for="price in prices">
+                    <input type="radio" name="gamePriceId" :value="price.id" class="jf-btn">{{price.price}}元</input>
+                </div>
+            </div>
+        </div>
+        <!--<div class="margin-top-20">
+            <ul class="fwmc_xxk">
+                <li class="on">
+                    <p>职位发布服务服务</p>
+                    <i>600</i>元</li>
+                <li >
+                    <p>职位发布服务服务</p>
+                    <i>500</i>元</li>
+                <li >
+                    <p>职位发布服务服务</p>
+                    <i>400</i>元</li>
+                <li >
+                    <p>职位发布服务服务</p>
+                    <i>300</i>元</li>
+                <li >
+                    <p>职位发布服务服务</p>
+                    <i>200</i>元</li>
+                <li >
+                    <p>职位发布服务服务</p>
+                    <i>100</i>元</li>
+            </ul>
+        </div>-->
+        <div class="margin-top-20">
+            <ul class="number-bar">
+                <li class="sub" @click="sub">-</li>
+                <li>
+                    <input name="gamePriceNumber" type="text" :value="count" class="count"/>
+                </li>
+                <li class="add" @click="add">+</li>
+            </ul>
+        </div>
+        <div class="padding-l-r-20">
+            <button type="submit" class="btn-login">确认</button>
+        </div>
+    </form>
+</div>
+<script src="statics/libs/jquery.min.js"></script>
+<script src="statics/libs/common.js"></script>
+<script src="statics/libs/bootstrap.min.js"></script>
+<script src="statics/libs/vue.min.js"></script>
+<script src="statics/form.js"></script>
+</body>
+</html>

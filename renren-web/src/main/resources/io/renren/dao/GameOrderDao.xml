@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.GameOrderDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.GameOrderEntity" id="gameOrderMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="account" column="account"/>
+        <result property="infoJson" column="info_json"/>
+        <result property="isHandle" column="is_handle"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDel" column="is_del"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.GameOrderEntity">
+		select * from game_order where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.GameOrderEntity">
+		select * from game_order
+		<where>
+			<if test="createTime != null and createTime != ''" >
+				and create_time &gt; #{createTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				and create_time  &lt; #{endTime}
+			</if>
+			<if test="gameName != null and gameName != ''">
+				and name like CONCAT('%','${gameName}','%' )
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from game_order 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.GameOrderEntity">
+		insert into game_order
+		(
+			`id`, 
+			`name`, 
+			`account`, 
+			`info_json`, 
+			`is_handle`, 
+			`total_amount`,
+			`game_price_number`,
+			`game_price_id`,
+			`creator_id`, 
+			`create_time`, 
+			`update_id`, 
+			`update_time`, 
+			`is_del`
+		)
+		values
+		(
+			#{id}, 
+			#{name}, 
+			#{account}, 
+			#{infoJson}, 
+			#{isHandle}, 
+			#{totalAmount},
+			#{gamePriceNumber},
+			#{gamePriceId},
+			#{creatorId},
+			#{createTime}, 
+			#{updateId}, 
+			#{updateTime}, 
+			#{isDel}
+		)
+	</insert>
+
+	<insert id="insert" parameterType="io.renren.entity.GameOrderEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into game_order
+		(
+		`id`,
+		`name`,
+		`account`,
+		`info_json`,
+		`is_handle`,
+		`total_amount`,
+		`game_price_number`,
+		`game_price_id`,
+		`creator_id`,
+		`create_time`,
+		`update_id`,
+		`update_time`,
+		`is_del`
+		)
+		values
+		(
+		#{id},
+		#{name},
+		#{account},
+		#{infoJson},
+		#{isHandle},
+		#{totalAmount},
+		#{gamePriceNumber},
+		#{gamePriceId},
+		#{creatorId},
+		#{createTime},
+		#{updateId},
+		#{updateTime},
+		#{isDel}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.GameOrderEntity">
+		update game_order 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="account != null">`account` = #{account}, </if>
+			<if test="infoJson != null">`info_json` = #{infoJson}, </if>
+			<if test="isHandle != null">`is_handle` = #{isHandle}, </if>
+			<if test="totalAmount != null">`total_amount` = #{totalAmount}, </if>
+			<if test="creatorId != null">`creator_id` = #{creatorId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateId != null">`update_id` = #{updateId}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="isDel != null">`is_del` = #{isDel}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from game_order where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from game_order where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<update id="handleBatch">
+		update game_order set is_handle = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<select id="lock" resultType="io.renren.entity.GameOrderEntity">
+		select * from game_order for update
+	</select>
+
+	<insert id="backup">
+		insert into game_order_backup select * from game_order where is_handle = 1 and creat_time &lt; date_sub(now(), interval 5 day)
+	</insert>
+
+	<delete id="deleteHandle">
+		delete from game_order where is_handle = 1
+	</delete>
+
+	<delete id="deleteBackup">
+		delete from game_order_backup
+	</delete>
+
+</mapper>

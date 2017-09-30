@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>支付</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script src="${rc.contextPath}/statics/libs/jquery.min.js"></script>
+    <link rel="stylesheet" href="${rc.contextPath}/statics/css/reset.css">
+    <link rel="stylesheet" href="${rc.contextPath}/statics/css/mobile.css">
+<body >
+<div class="pay-code">
+    <h1>长按二维码识别后，输入支付金额进行支付</h1>
+    <img src="${img.url}">
+</div>
+
+
+
+
+</body>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //宽度为750px设计稿
+        var W = $(window).width();
+
+        var fontSize = W / 7.5;
+        if (fontSize > 100) {
+            fontSize = 100;
+        }
+        $("html").css("font-size", fontSize + 'px');
+
+    });
+
+</script>
+</html>
+
+
+
+

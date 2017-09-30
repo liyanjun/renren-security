@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.GamePagePropertyDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.GamePagePropertyEntity" id="gamePagePropertyMap">
+        <result property="id" column="id"/>
+        <result property="advert" column="advert"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDel" column="is_del"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="io.renren.entity.GamePagePropertyEntity">
+		select * from game_page_property where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.renren.entity.GamePagePropertyEntity">
+		select * from game_page_property
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from game_page_property 
+	</select>
+	 
+	<insert id="save" parameterType="io.renren.entity.GamePagePropertyEntity">
+		insert into game_page_property
+		(
+			`id`, 
+			`advert`, 
+			`update_id`, 
+			`update_time`, 
+			`is_del`
+		)
+		values
+		(
+			#{id}, 
+			#{advert}, 
+			#{updateId}, 
+			#{updateTime}, 
+			#{isDel}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="io.renren.entity.GamePagePropertyEntity">
+		update game_page_property 
+		<set>
+			<if test="advert != null">`advert` = #{advert}, </if>
+			<if test="updateId != null">`update_id` = #{updateId}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="isDel != null">`is_del` = #{isDel}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from game_page_property where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from game_page_property where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
