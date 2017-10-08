@@ -118,7 +118,6 @@ public class FrontController extends AbstractController {
         String out_trade_no = new String(gameOrderEntity.getId().toString().getBytes("ISO-8859-1"),"UTF-8");
         // 订单名称，必填
         String subject = new String((orderName+gameOrderEntity.getId()).getBytes("ISO-8859-1"),"UTF-8");
-        System.out.println(subject);
         // 付款金额，必填
         String total_amount=new String(gameOrderEntity.getTotalAmount().toString().getBytes("ISO-8859-1"),"UTF-8");
 //        // 商品描述，可空
@@ -136,6 +135,8 @@ public class FrontController extends AbstractController {
         // 封装请求支付信息
         AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
         model.setTotalAmount(total_amount);
+        model.setOutTradeNo(out_trade_no);
+        model.setSubject(subject);
 //        model.setBody(body);
 //        model.setTimeoutExpress(timeout_express);
         model.setProductCode(product_code);
