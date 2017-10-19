@@ -106,5 +106,16 @@
 </div>
 
 <script src="${rc.contextPath}/js/game/gameorder.js?_${date.systemTime}"></script>
+<script language="JavaScript">
+    function myrefresh()
+    {
+        var page = $("#jqGrid").jqGrid('getGridParam', 'page');
+        $("#jqGrid").jqGrid('setGridParam', {
+            page: page
+        }).trigger("reloadGrid");
+    }
+    window.setInterval('myrefresh()',20000); //指定20秒刷新一次
+</script>
+
 </body>
 </html>

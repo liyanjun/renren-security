@@ -57,6 +57,7 @@ public class GameOrderController {
 		JSONObject jsonObject5 = new JSONObject();jsonObject5.put("label","订单总额");jsonObject5.put("name","totalAmount");jsonObject5.put("index","totalAmount");jsonObject5.put("width","80");
 		JSONObject jsonObject6 = new JSONObject();jsonObject6.put("label","购买数量");jsonObject6.put("name","gamePriceNumber");jsonObject6.put("width","80");
 		JSONObject jsonObject7 = new JSONObject();jsonObject7.put("label","购买面额");jsonObject7.put("name","gamePrice");jsonObject7.put("width","80");
+		JSONObject jsonObject8 = new JSONObject();jsonObject8.put("label","是否支付");jsonObject8.put("name","isPay");jsonObject8.put("width","80");
 
 		gameOrderCol.add(jsonObject);
 		gameOrderCol.add(jsonObject2);
@@ -70,6 +71,7 @@ public class GameOrderController {
 		gameOrderCol.add(jsonObject7);
 		gameOrderCol.add(jsonObject5);
 		gameOrderCol.add(jsonObject4);
+		gameOrderCol.add(jsonObject8);
 		return gameOrderCol;
 	}
 	

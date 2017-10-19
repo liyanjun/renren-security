@@ -33,6 +33,8 @@ public class GameOrderEntity implements Serializable {
     private Integer gamePriceNumber;
     //购买价位ID
     private Long gamePriceId;
+
+    private Integer isPay;
     //
     private Long creatorId;
     //
@@ -212,5 +214,13 @@ public class GameOrderEntity implements Serializable {
 
     public void setGamePriceId(Long gamePriceId) {
         this.gamePriceId = gamePriceId;
+    }
+
+    public Integer getIsPay() {
+        return isPay;
+    }
+
+    public void setIsPay(Integer isPay) {
+        this.isPay = isPay;
     }
 }

@@ -141,4 +141,5 @@ public class GamePropertyEntity implements Serializable {
 	public Integer getIsDel() {
 		return isDel;
 	}
+
 }

@@ -130,6 +130,7 @@
 			<if test="infoJson != null">`info_json` = #{infoJson}, </if>
 			<if test="isHandle != null">`is_handle` = #{isHandle}, </if>
 			<if test="totalAmount != null">`total_amount` = #{totalAmount}, </if>
+			<if test="isPay != null">`is_pay` = #{isPay}, </if>
 			<if test="creatorId != null">`creator_id` = #{creatorId}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="updateId != null">`update_id` = #{updateId}, </if>

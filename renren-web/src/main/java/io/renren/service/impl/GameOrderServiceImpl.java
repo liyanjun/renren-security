@@ -52,6 +52,7 @@ public class GameOrderServiceImpl implements GameOrderService {
             GamePriceEntity price = gamePriceDao.queryObject(gameOrder.getGamePriceId().toString());
             jsonObject.put("gamePriceId", price.getId().toString());
             jsonObject.put("gamePrice", price.getPrice().toString() + "元");
+            jsonObject.put("isPay", gameOrder.getIsPay() == 1 ? "<font color=\"green\">已支付</font>" : "<font color=\"red\">未支付</font>");
             jsonList.add(jsonObject);
         }
         return jsonList;
