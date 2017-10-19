@@ -1,17 +1,15 @@
 package io.renren.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
-import io.renren.dao.GamePropertyDao;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.internal.util.AlipaySignature;
+import io.renren.config.AlipayConfig;
 import io.renren.entity.GamePropertyEntity;
 import io.renren.service.GamePropertyService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,10 +23,12 @@ import io.renren.utils.PageUtils;
 import io.renren.utils.Query;
 import io.renren.utils.R;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * 订单表
- * 
+ *
  * @author chenshun
  * @email sunlightcs@gmail.com
  * @date 2017-05-28 21:27:52
@@ -120,27 +120,61 @@ public class GameOrderController {
 		
 		return R.ok();
 	}*/
-	
-	/**
-	 * 修改
-	 */
-	@RequestMapping("/update")
-	@RequiresPermissions("gameorder:update")
-	public R update(@RequestBody GameOrderEntity gameOrder){
-		gameOrderService.update(gameOrder);
-		
-		return R.ok();
-	}
-	
-	/**
-	 * 修改订单为已处理
-	 */
-	@RequestMapping("/handle")
-	@RequiresPermissions("gameorder:update")
-	public R handle(@RequestBody Long[] ids){
-		gameOrderService.handleBatch(ids);
-		
-		return R.ok();
-	}
-	
+
+    /**
+     * 修改
+     */
+    @RequestMapping("/update")
+    @RequiresPermissions("gameorder:update")
+    public R update(@RequestBody GameOrderEntity gameOrder) {
+        gameOrderService.update(gameOrder);
+
+        return R.ok();
+    }
+
+    /**
+     * 修改订单为已处理
+     */
+    @RequestMapping("/handle")
+    @RequiresPermissions("gameorder:update")
+    public R handle(@RequestBody Long[] ids) {
+        gameOrderService.handleBatch(ids);
+
+        return R.ok();
+    }
+
+    public void alipayNotify(HttpServletRequest request) {
+        Map<String, String> params = new HashMap<String, String>();
+        Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            //乱码解决，这段代码在出现乱码时使用。
+            //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
+            params.put(name, valueStr);
+        }
+        //切记alipaypublickey是支付宝的公钥，请去open.alipay.com对应应用下查看。
+        //boolean AlipaySignature.rsaCheckV1(Map<String, String> params, String publicKey, String charset, String sign_type)
+        try {
+            boolean flag = AlipaySignature.rsaCheckV1(params, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.CHARSET, "RSA2");
+            if(flag){
+                Long outTradeNo = Long.parseLong(request.getParameter("out_trade_no"));
+                GameOrderEntity gameOrderEntity = gameOrderService.queryObject(outTradeNo);
+                //TODO 更新状态为已支付
+                if(gameOrderEntity != null){
+                    gameOrderService.update(gameOrderEntity);
+                }
+            } else{
+
+            }
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

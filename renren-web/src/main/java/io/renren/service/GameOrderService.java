@@ -23,8 +23,8 @@ public interface GameOrderService {
 	List<GameOrderEntity> queryListForBackup(Map<String, Object> map);
 
 	int queryTotal(Map<String, Object> map);
-	
-	void save(GameOrderEntity gameOrder, List<GamePropertyValueEntity> valueList);
+
+	GameOrderEntity save(GameOrderEntity gameOrder, List<GamePropertyValueEntity> valueList);
 	
 	void update(GameOrderEntity gameOrder);
 	

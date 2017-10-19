@@ -72,13 +72,14 @@ public class GameOrderServiceImpl implements GameOrderService {
 
     @Override
     @Transactional
-    public void save(GameOrderEntity gameOrder, List<GamePropertyValueEntity> valueList) {
+    public GameOrderEntity save(GameOrderEntity gameOrder, List<GamePropertyValueEntity> valueList) {
         gameOrderDao.insert(gameOrder);
         for (GamePropertyValueEntity value : valueList) {
             value.setCreatorId(-1);
             value.setGameOrderId(gameOrder.getId());
             gamePropertyValueDao.save(value);
         }
+        return gameOrder;
     }
 
     @Override
