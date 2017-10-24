@@ -4,6 +4,7 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeWapPayModel;
+import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import io.renren.config.AlipayConfig;
 import io.renren.entity.*;
@@ -24,9 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 前台表单逻辑
@@ -175,6 +174,42 @@ public class FrontController extends AbstractController {
 //
 //        model.addAttribute("img", list.get(0));
 //        return "pay.html";
+    }
+
+    @RequestMapping("/notify")
+    public void alipayNotify(HttpServletRequest request) {
+        Map<String, String> params = new HashMap<String, String>();
+        Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            //乱码解决，这段代码在出现乱码时使用。
+            //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
+            params.put(name, valueStr);
+        }
+        //切记alipaypublickey是支付宝的公钥，请去open.alipay.com对应应用下查看。
+        //boolean AlipaySignature.rsaCheckV1(Map<String, String> params, String publicKey, String charset, String sign_type)
+        try {
+            boolean flag = AlipaySignature.rsaCheckV1(params, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.CHARSET, "RSA2");
+            if(flag){
+                Long outTradeNo = Long.parseLong(request.getParameter("out_trade_no"));
+                GameOrderEntity gameOrderEntity = gameOrderService.queryObject(outTradeNo);
+                //TODO 更新状态为已支付
+                if(gameOrderEntity != null){
+                    gameOrderEntity.setIsPay(1);
+                    gameOrderService.update(gameOrderEntity);
+                }
+            } else{
+
+            }
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
     }
 
 }
